@@ -33,3 +33,7 @@ waha_sessions/
 
 #models
 insightface_models/
+*.onnx
+*.zip
+backend/**/insightface_models*
+ai_engine/**/insightface_models*
