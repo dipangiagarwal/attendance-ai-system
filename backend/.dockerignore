@@ -1,0 +1,41 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files (use docker env_file instead)
+.env
+*.envZone.Identifier
+
+# Virtual environment (use pip install in Docker instead)
+venv/
+.env/
+
+# Git
+.git
+.gitignore
+
+# Node (not needed in backend)
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Database files
+*.sqlite
+*.db
+
+# Cache
+.cache
+
+# Windows junk files
+*.Zone.Identifier
+*Zone.Identifier
+
+# Temp folders
+D/
+
+# Test files (optional - remove if you need them in container)
+test_*.py

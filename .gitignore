@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+.env
+
+# Node
+node_modules/
+.next/
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.env
+.env.*
+
+# Redis
+redis_data/
+
+# WAHA
+waha_sessions/
+
+#models
+insightface_models/

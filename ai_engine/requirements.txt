@@ -1,0 +1,8 @@
+fastapi
+numpy
+opencv-python
+python-dotenv
+requests
+uvicorn
+websockets
+faiss-cpu
