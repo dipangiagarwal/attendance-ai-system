@@ -37,3 +37,5 @@ insightface_models/
 *.zip
 backend/**/insightface_models*
 ai_engine/**/insightface_models*
+
+*Zone.Identifier*
