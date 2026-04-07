@@ -39,3 +39,4 @@ backend/**/insightface_models*
 ai_engine/**/insightface_models*
 
 *Zone.Identifier*
+ai_frontend_backup/
