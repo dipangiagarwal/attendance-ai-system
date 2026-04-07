@@ -13,6 +13,7 @@ PUBLIC_ROUTES = [
     "/docs",
     "/openapi.json",
     "/redoc",
+    "/embeddings",
 ]
 
 class JWTAuthMiddleware(BaseHTTPMiddleware):
@@ -24,6 +25,9 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
 
         # Cookie se token lo
         token = request.cookies.get("access_token")  # ← Cookie se
+
+
+        print("token here",token)
 
         if not token:
             return JSONResponse(

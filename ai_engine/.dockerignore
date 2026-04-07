@@ -12,3 +12,8 @@ node_modules/
 *.log
 *.db
 .cache
+
+# insightface_models/
+# models/
+# *.onnx
+# .buffalo_l/

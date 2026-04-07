@@ -39,3 +39,10 @@ D/
 
 # Test files (optional - remove if you need them in container)
 test_*.py
+
+#models
+insightface_models~
+insightface_models
+models
+*.onnx
+*.zip
