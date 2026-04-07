@@ -35,22 +35,18 @@ services:
   ai_engine:
     build: ./ai_engine
     container_name: attendance_ai_engine
-
     ports:
       - "9000:9000"
-
     env_file:
       - ./ai_engine/.env
-
     volumes:
       - ./ai_engine:/app
       - ./ai_engine/insightface_models:/app/insightface_models
-
+    depends_on:
+    - backend
     restart: always
-
     networks:
       - attendance_network
-
 
 # ==========================================
 # Frontend (Next.js)
@@ -60,28 +56,20 @@ services:
       context: ./ai_frontend
       dockerfile: dockerfile
     container_name: attendance_frontend
-
     ports:
       - "3000:3000"
-
     volumes:
       - ./ai_frontend:/app
       - /app/node_modules
-
     env_file:
       - ./ai_frontend/.env.local
-
     environment:
       - WATCHPACK_POLLING=true
-
     depends_on:
       - backend
-
     restart: always
-
     networks:
       - attendance_network
-
 
 # ==========================================
 # Redis
