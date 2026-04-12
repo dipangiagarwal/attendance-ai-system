@@ -13,8 +13,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { confirmDelete } from "@/utils/alert";
 
 export default function StudentsTable() {
+
   const { data, isLoading } = useStudents();
 
   const students = useMemo(() => {
@@ -52,13 +54,15 @@ export default function StudentsTable() {
 
   // 🔥 Delete handler (safe + clean)
   const handleDelete = useCallback(
-    (student) => {
+   async(student) => {
       if (!student?.id) return;
 
-      const confirmed = confirm(`Delete student ${student.name}?`);
-      if (!confirmed) return;
+     const result = await confirmDelete(student.name);
+     
 
+    if (result.isConfirmed) {
       deleteStudent(student.id);
+    }
     },
     [deleteStudent]
   );

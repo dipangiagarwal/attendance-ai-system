@@ -8,7 +8,8 @@ import { useLogin } from "@/hooks/useRegister";
 import { showError } from "@/utils/toast";
 
 export default function AdminLogin() {
-  const { mutate, isPending } = useLogin();
+  const [rateLimitError, setRateLimitError] = useState(null);
+  const { mutate, isPending } = useLogin(setRateLimitError);
   const [showPassword, setShowPassword] = useState(false);
 
 const [form, setForm] = useState({
@@ -27,6 +28,35 @@ const handleLogin = (e) => {
 
   mutate(form);
 };
+
+
+if (rateLimitError) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+
+      <div className="bg-[#0d0d1a] p-8 rounded-xl border border-red-500/30">
+
+        <h2 className="text-red-400 text-xl font-bold mb-4">
+          Status Code: {rateLimitError.status}
+        </h2>
+
+        <pre className="text-sm text-gray-300 bg-black p-4 rounded">
+{JSON.stringify(
+  { detail: rateLimitError.detail },
+  null,
+  2
+)}
+        </pre>
+
+        <p className="text-xs text-gray-400 mt-4">
+          Please wait 1 minute and try again.
+        </p>
+
+      </div>
+
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen w-full bg-[#07070f] flex items-center justify-center px-4 py-10 relative overflow-hidden">

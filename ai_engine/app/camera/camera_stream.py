@@ -1,7 +1,8 @@
 import cv2
+import time
 from app.camera.camera_face_detection import process_frame
 from app.utils.config import (
-    CAMERA_TYPE, 
+    CAMERA_TYPE,
     CAMERA_INDEX,
     CAMERA_USERNAME,
     CAMERA_PASSWORD,
@@ -11,73 +12,89 @@ from app.utils.config import (
 )
 
 def get_camera_source():
-    """
-    Get camera source based on configuration.
-    Returns the appropriate source for cv2.VideoCapture()
-    """
     if CAMERA_TYPE.lower() == 'ip':
-        # Build RTSP URL for IP camera
         rtsp_url = f"rtsp://{CAMERA_USERNAME}:{CAMERA_PASSWORD}@{CAMERA_IP}:{CAMERA_PORT}{CAMERA_STREAM_PATH}"
         print(f"[INFO] Using IP Camera: {CAMERA_IP}")
+        print(f"[INFO] RTSP URL: {rtsp_url}")
         return rtsp_url
     elif CAMERA_TYPE.lower() == 'usb':
-        # Use USB webcam
         print(f"[INFO] Using USB Camera: Index {CAMERA_INDEX}")
-        return CAMERA_INDEX
+        return int(CAMERA_INDEX)
     else:
         print(f"[WARNING] Unknown CAMERA_TYPE '{CAMERA_TYPE}', defaulting to USB")
-        return CAMERA_INDEX
+        return int(CAMERA_INDEX)
+
+
+def open_camera(source):
+    cap = cv2.VideoCapture(source)
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+    cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000)
+    cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, 5000)
+    return cap
+
 
 def start_camera_stream(source=None):
-    """
-    Start camera or video stream.
-    
-    Args:
-        source: Override source (optional)
-            - None: Use config settings (CAMERA_TYPE)
-            - 0, 1, 2...: USB webcam index
-            - str: Video file path or RTSP URL
-    """
-    
-    # If no source provided, get from config
     if source is None:
         source = get_camera_source()
-    
-    # cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
-    if isinstance(source, str) and source.startswith('rtsp'):
-        cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
-    else:
-        cap = cv2.VideoCapture(source)
-    
-    # Set buffer size to reduce latency for IP cameras
-    if isinstance(source, str) and source.startswith('rtsp'):
-        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-    
+
+    cap = open_camera(source)
+
     if not cap.isOpened():
         print("[ERROR] Unable to open camera")
         print(f"[ERROR] Source: {source}")
-        print("[TIP] Check your .env settings and network connection")
         return
 
     print("[INFO] Camera stream started")
 
+    frame_count = 0
+    SKIP_FRAMES = 3
+    retry_count = 0
+    MAX_RETRIES = 10
+
     while True:
         ret, frame = cap.read()
 
-        if not ret:
-            print("[WARNING] Frame not received, retrying...")
+        if not ret or frame is None:
+            retry_count += 1
+            print(f"[WARNING] Frame not received, retrying... ({retry_count}/{MAX_RETRIES})")
             cap.release()
-            import time
             time.sleep(2)
-            cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
+
+            if retry_count >= MAX_RETRIES:
+                print("[ERROR] Max retries reached. Restarting stream in 10s...")
+                time.sleep(10)
+                retry_count = 0
+
+            cap = open_camera(source)
             continue
 
-        processed_frame, faces = process_frame(frame)
-        # Running headless - no imshow
+        retry_count = 0
+        frame_count += 1
 
-    cap.release()
-    print("[INFO] Camera stream stopped")
+        # ✅ Har 30 frames pe batao ki frames aa rahi hain
+        if frame_count % 30 == 0:
+            print(f"[DEBUG] ✅ Frames chal rahi hain — total: {frame_count}")
+
+        if frame_count % SKIP_FRAMES != 0:
+            continue
+
+        # ✅ Process frame aur result log karo
+        try:
+            processed_frame, faces = process_frame(frame)
+
+            # ✅ Har 30 processed frames pe face result dikhao
+            if (frame_count // SKIP_FRAMES) % 10 == 0:
+                if len(faces) == 0:
+                    print(f"[DEBUG] 👤 Koi face detect nahi hua (frame {frame_count})")
+                else:
+                    for face in faces:
+                        sid = face.get("student_id", "unknown")
+                        dist = face.get("distance", None)
+                        print(f"[DEBUG] 🎯 Face mila — student_id: {sid}, score: {dist}")
+
+        except Exception as e:
+            print(f"[ERROR] Frame process karte waqt error: {e}")
+
 
 if __name__ == "__main__":
-    # For testing
     start_camera_stream()

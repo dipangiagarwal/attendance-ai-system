@@ -78,3 +78,4 @@ uvicorn==0.42.0
 waha==1.0.5
 wcwidth==0.6.0
 webencodings==0.5.1
+slowapi==0.1.9

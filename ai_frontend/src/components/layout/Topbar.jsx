@@ -12,8 +12,16 @@ import {
   User,
   Shield,
 } from "lucide-react";
+  import { useLogout, useAdmin } from "@/hooks/useRegister";
+
 
 export default function Topbar({ onMenuToggle }) {
+
+  const { mutate: logout } = useLogout();
+
+const { data } = useAdmin();
+
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
 
@@ -106,11 +114,9 @@ export default function Topbar({ onMenuToggle }) {
 
             <div className="hidden sm:block text-left">
               <p className="text-xs font-semibold text-white leading-tight">
-                Admin
+               {data?.message }
               </p>
-              <p className="text-[10px] text-gray-500 leading-tight">
-                Super User
-              </p>
+             
             </div>
 
             <ChevronDown
@@ -133,25 +139,15 @@ export default function Topbar({ onMenuToggle }) {
     <div className="absolute right-0 top-full mt-2 w-52 bg-[#13131e] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-150">
                 {/* User Info */}
                 <div className="px-4 py-3 border-b border-white/10">
-                  <p className="text-sm font-semibold text-white">Admin</p>
-                  <p className="text-xs text-gray-500">admin@school.edu</p>
-                </div>
-
-                {/* Menu Items */}
-                <div className="p-1.5 space-y-0.5">
-                  <button className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition text-sm">
-                    <User size={15} />
-                    Profile
-                  </button>
-                  <button className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition text-sm">
-                    <Settings size={15} />
-                    Settings
-                  </button>
+                  <p className="text-sm font-semibold text-white"> {data?.admin_email?.split("@")[0] || "Admin"}</p>
+                  <p className="text-xs text-gray-500">{data?.admin_email || "admin@email.com"}</p>
                 </div>
 
                 {/* Logout */}
                 <div className="p-1.5 border-t border-white/10">
-                  <button className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition text-sm">
+                  <button
+                    onClick={() => logout()}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 transition text-sm">
                     <LogOut size={15} />
                     Logout
                   </button>

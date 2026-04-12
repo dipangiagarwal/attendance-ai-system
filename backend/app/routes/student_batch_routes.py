@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 
 from app.database.db import get_db
-from app.schemas.student_batch_schema import StudentBatchCreate, StudentBatchResponse
+from app.schemas.student_batch_schema import (
+    StudentBatchCreate,
+    StudentBatchResponse
+)
+
 from app.controllers.student_batch_controller import (
     assign_student_to_batch,
     remove_student_from_batch,
@@ -10,32 +14,67 @@ from app.controllers.student_batch_controller import (
     get_batches_of_student
 )
 
-router = APIRouter(prefix="/student-batches", tags=["Student Batches"])
+# ✅ FIX: Import from utils, NOT main
+from app.utils.limiter import limiter
+
+
+router = APIRouter(
+    prefix="/student-batches",
+    tags=["Student Batches"]
+)
 
 
 # Assign student to batch
 @router.post("/assign_batch", response_model=StudentBatchResponse)
-def add_student_to_batch(data: StudentBatchCreate, db: Session = Depends(get_db)):
+@limiter.limit("100/minute")
+def add_student_to_batch(
+    request: Request,   # required for limiter
+    data: StudentBatchCreate,
+    db: Session = Depends(get_db)
+):
 
-    return assign_student_to_batch(db, data)
+    return assign_student_to_batch(
+        db,
+        data
+    )
 
 
 # Get all students in a batch
 @router.get("/batch/{batch_id}")
-def get_students(batch_id: int, db: Session = Depends(get_db)):
+def get_students(
+    batch_id: int,
+    db: Session = Depends(get_db)
+):
 
-    return get_students_in_batch(db, batch_id)
+    return get_students_in_batch(
+        db,
+        batch_id
+    )
 
 
 # Get all batches of a student
 @router.get("/student/{student_id}")
-def get_batches(student_id: int, db: Session = Depends(get_db)):
+def get_batches(
+    student_id: int,
+    db: Session = Depends(get_db)
+):
 
-    return get_batches_of_student(db, student_id)
+    return get_batches_of_student(
+        db,
+        student_id
+    )
 
 
 # Remove student from batch
 @router.delete("/remove_student/{relation_id}")
-def remove_student(relation_id: int, db: Session = Depends(get_db)):
+@limiter.limit("100/minute")
+def remove_student(
+    request: Request,
+    relation_id: int,
+    db: Session = Depends(get_db)
+):
 
-    return remove_student_from_batch(db, relation_id)
+    return remove_student_from_batch(
+        db,
+        relation_id
+    )

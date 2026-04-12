@@ -1,4 +1,111 @@
-version: "3.9"
+# services:
+
+# # ==========================================
+# # Backend (FastAPI)
+# # ==========================================
+#   backend:
+#     build: ./backend
+#     container_name: attendance_backend
+#     ports:
+#       - "8000:8000"
+#     env_file:
+#       - ./backend/.env
+#     depends_on:
+#       - redis
+#     volumes:
+#       - ./backend:/app
+#     restart: always
+#     networks:
+#       - attendance_network
+
+
+# # ==========================================
+# # AI Engine
+# # ==========================================
+#   ai_engine:
+#     build: ./ai_engine
+#     container_name: attendance_ai_engine
+#     ports:
+#       - "9000:9000"
+#     env_file:
+#       - ./ai_engine/.env
+#     volumes:
+#       - ./ai_engine:/app
+#       - ./ai_engine/insightface_models:/app/insightface_models
+#     depends_on:
+#       - backend
+#     restart: always
+#     network_mode: host
+
+
+# # ==========================================
+# # Frontend (Next.js)
+# # ==========================================
+#   frontend:
+#     build:
+#       context: ./ai_frontend
+#       dockerfile: dockerfile
+#     container_name: attendance_frontend
+#     ports:
+#       - "3000:3000"
+#     volumes:
+#       - ./ai_frontend:/app
+#       - /app/node_modules
+#     env_file:
+#       - ./ai_frontend/.env.local
+#     environment:
+#       - WATCHPACK_POLLING=true
+#     depends_on:
+#       - backend
+#     restart: always
+#     networks:
+#       - attendance_network
+
+
+# # ==========================================
+# # Redis
+# # ==========================================
+#   redis:
+#     image: redis:7
+#     container_name: attendance_redis
+#     ports:
+#       - "6379:6379"
+#     volumes:
+#       - redis_data:/data
+#     restart: always
+#     networks:
+#       - attendance_network
+
+
+# # ==========================================
+# # WAHA (WhatsApp Automation)
+# # ==========================================
+#   waha:
+#     image: devlikeapro/waha
+#     container_name: attendance_waha
+#     ports:
+#       - "3001:3000"
+#     volumes:
+#       - ./waha_sessions:/app/.sessions
+#     restart: always
+#     networks:
+#       - attendance_network
+
+
+# # ==========================================
+# # Networks
+# # ==========================================
+# networks:
+#   attendance_network:
+#     driver: bridge
+
+
+# # ==========================================
+# # Volumes
+# # ==========================================
+# volumes:
+#   redis_data:
+
 
 services:
 
@@ -8,23 +115,15 @@ services:
   backend:
     build: ./backend
     container_name: attendance_backend
-
     ports:
       - "8000:8000"
-
     env_file:
       - ./backend/.env
-
     depends_on:
       - redis
-      # - ai_engine
-      # - waha
-
     volumes:
       - ./backend:/app
-
     restart: always
-
     networks:
       - attendance_network
 
@@ -43,10 +142,28 @@ services:
       - ./ai_engine:/app
       - ./ai_engine/insightface_models:/app/insightface_models
     depends_on:
-    - backend
+      - backend
     restart: always
+
+    # =========================================
+    # OFFICE (Kal) — IP Camera LAN pe hai
+    # Kal ye uncomment karo aur laptop wala comment karo
+    # =========================================
+    # network_mode: host
+
+    # =========================================
+    # LAPTOP (Abhi testing ke liye)
+    # Webcam mount kar rahe hain container mein
+    # Kal ye comment karo aur office wala uncomment karo
+    # =========================================
+
+
+    
+    devices:
+      - /dev/video0:/dev/video0
     networks:
       - attendance_network
+
 
 # ==========================================
 # Frontend (Next.js)
@@ -71,21 +188,18 @@ services:
     networks:
       - attendance_network
 
+
 # ==========================================
 # Redis
 # ==========================================
   redis:
     image: redis:7
     container_name: attendance_redis
-
     ports:
       - "6379:6379"
-
     volumes:
       - redis_data:/data
-
     restart: always
-
     networks:
       - attendance_network
 
@@ -96,15 +210,11 @@ services:
   waha:
     image: devlikeapro/waha
     container_name: attendance_waha
-
     ports:
       - "3001:3000"
-
     volumes:
       - ./waha_sessions:/app/.sessions
-
     restart: always
-
     networks:
       - attendance_network
 

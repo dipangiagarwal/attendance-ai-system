@@ -1,7 +1,7 @@
 import requests
 import numpy as np
 from app.utils.config import BACKEND_URL
-
+import os
 
 def fetch_embeddings_from_backend():
     url = f"{BACKEND_URL}/embeddings"
@@ -52,3 +52,25 @@ def send_attendance_to_backend(student_id, timestamp, confidence_score= None):
 
     except Exception as e:
         print("[ERROR] Failed to send attendance:", e)
+
+
+
+# def send_whatsapp_message(phone_number, message):
+#     try:
+#         WAHA_URL = os.getenv("WAHA_URL", "http://localhost:3001")
+#         WAHA_API_KEY = os.getenv("WAHA_API_KEY")
+
+#         response = requests.post(
+#             f"{WAHA_URL}/api/sendText",
+#             json={
+#                 "chatId": f"{phone_number}@c.us",
+#                 "text": message,
+#                 "session": "default"
+#             },
+#             headers={"X-Api-Key": WAHA_API_KEY}
+#         )
+#         print(f"[INFO] WhatsApp message sent to {phone_number}")
+#         return True
+#     except Exception as e:
+#         print(f"[ERROR] WhatsApp send failed: {e}")
+#         return False

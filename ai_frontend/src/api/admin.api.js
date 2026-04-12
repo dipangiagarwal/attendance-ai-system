@@ -1,7 +1,7 @@
 import api from "@/utils/api";
 
 
-
+// register for admin 
 export const registerAdmin = async (data) => {
   const res = await api.post("/api/admin/register", data);
   return res.data;
@@ -9,9 +9,25 @@ export const registerAdmin = async (data) => {
 
 
 
-
+// login for admin 
 export const loginAdmin = async (data) => {
   const res = await api.post("/api/admin/login", data);
+  return res.data;
+};
+
+
+
+
+// logout admin
+export const logoutAdmin = async () => {
+  const res = await api.post("/api/admin/logout");
+  return res.data;
+};
+
+// get current admin info
+export const getDashboardData = async () => {
+  const res = await api.get("/api/admin/dashboard");
+  console.log("res for admin dashboard",res)
   return res.data;
 };
 
@@ -45,7 +61,7 @@ export const updateStudent = async (id, data) => {
 
 // DELETE  Student 
 export const deleteStudent = async (id) => {
-  const res = await api.delete(`/students/${id}`);
+  const res = await api.delete(`/students/delete_student/${id}`);
   return res.data;
 };
 

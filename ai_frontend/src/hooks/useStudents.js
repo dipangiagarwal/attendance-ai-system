@@ -2,6 +2,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getStudents, createStudent, deleteStudent } from "@/api/admin.api";
 import { showSuccess, showError } from "@/utils/toast";
+import { confirmDelete, successAlert, errorAlert } from "@/utils/alert";
+import { useRouter } from "next/navigation";
+
 
 export const useStudents = () => {
   return useQuery({
@@ -12,6 +15,7 @@ export const useStudents = () => {
 
 // Student Create 
 export const useCreateStudent = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -23,6 +27,7 @@ export const useCreateStudent = () => {
       await queryClient.invalidateQueries({
         queryKey: ["students"], // auto refetch
       });
+      router.push("/dashboard/students");
     },
 
     onError: (error) => {
@@ -41,12 +46,15 @@ export const useDeleteStudent = () => {
     mutationFn: deleteStudent,
 
     onSuccess: () => {
-      showSuccess("Student deleted");
-      queryClient.invalidateQueries(["students"]);
+      successAlert("Student deleted successfully");
+
+      queryClient.invalidateQueries({
+        queryKey: ["students"],
+      });
     },
 
     onError: () => {
-      showError("Delete failed");
+      errorAlert("Delete failed");
     },
   });
 };
