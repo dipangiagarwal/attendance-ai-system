@@ -106,7 +106,7 @@ def update_camera_heartbeat(db: Session, camera_id: int):
 
 ## uncomment this tomorrow and commen the lower one
 # # Singleton instance
-# camera_service = RTSPCameraService(RTSP_URL)
+camera_service = RTSPCameraService(RTSP_URL)
 
 
-camera_service = RTSPCameraService(RTSP_URL) if RTSP_URL else None
+# camera_service = RTSPCameraService(RTSP_URL) if RTSP_URL else None

@@ -26,7 +26,28 @@ def get_camera_source():
 
 
 def open_camera(source):
-    cap = cv2.VideoCapture(source)
+    if isinstance(source, int):
+        # =========================================
+        # LAPTOP/USB (Abhi — ghar pe testing)
+        # V4L2 + MJPG format — WSL2 ke liye zaroori
+        # Kal office mein ye block kaam nahi karega
+        # kyunki source int nahi hoga (RTSP string hoga)
+        # Toh kuch change nahi karna yahan
+        # =========================================
+        cap = cv2.VideoCapture(source, cv2.CAP_V4L2)
+        cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        cap.set(cv2.CAP_PROP_FPS, 30)
+    else:
+        # =========================================
+        # OFFICE (Kal) — IP/RTSP Camera
+        # source ek string hoga (rtsp://...)
+        # Ye automatically use hoga jab CAMERA_TYPE=ip
+        # Kuch change nahi karna — bas .env update karo
+        # =========================================
+        cap = cv2.VideoCapture(source)
+
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000)
     cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, 5000)
@@ -71,18 +92,15 @@ def start_camera_stream(source=None):
         retry_count = 0
         frame_count += 1
 
-        # ✅ Har 30 frames pe batao ki frames aa rahi hain
         if frame_count % 30 == 0:
             print(f"[DEBUG] ✅ Frames chal rahi hain — total: {frame_count}")
 
         if frame_count % SKIP_FRAMES != 0:
             continue
 
-        # ✅ Process frame aur result log karo
         try:
             processed_frame, faces = process_frame(frame)
 
-            # ✅ Har 30 processed frames pe face result dikhao
             if (frame_count // SKIP_FRAMES) % 10 == 0:
                 if len(faces) == 0:
                     print(f"[DEBUG] 👤 Koi face detect nahi hua (frame {frame_count})")

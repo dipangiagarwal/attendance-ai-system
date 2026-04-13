@@ -149,7 +149,7 @@ services:
     # OFFICE (Kal) — IP Camera LAN pe hai
     # Kal ye uncomment karo aur laptop wala comment karo
     # =========================================
-    # network_mode: host
+    network_mode: host
 
     # =========================================
     # LAPTOP (Abhi testing ke liye)
@@ -159,10 +159,13 @@ services:
 
 
     
-    devices:
-      - /dev/video0:/dev/video0
-    networks:
-      - attendance_network
+    # devices:
+    #   - /dev/video0:/dev/video0
+    # privileged: true
+    # group_add:
+    #   - "44"
+    # networks:
+    #   - attendance_network
 
 
 # ==========================================
