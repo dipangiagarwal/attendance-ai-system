@@ -13,6 +13,10 @@ def detect_faces_and_embeddings(frame):
     # 90 degree rotate — office camera ulta laga hai
     # Kal ye uncomment karo, aur laptop wala comment karo
     # =========================================
+
+
+
+    # TO STOP ROTATION
     frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
     if not frame_saved:
         cv2.imwrite("/app/debug_frame_rotated.jpg", frame)

@@ -14,6 +14,7 @@ PUBLIC_ROUTES = [
     "/openapi.json",
     "/redoc",
     "/embeddings",
+    "/attendance/mark",
 ]
 
 class JWTAuthMiddleware(BaseHTTPMiddleware):

@@ -54,7 +54,7 @@ def is_index_initialized():
 
 
 
-def search_face(query_embedding, threshold=0.5):
+def search_face(query_embedding, threshold=0.6):
     """
     Search face in FAISS index
     """
@@ -75,11 +75,10 @@ def search_face(query_embedding, threshold=0.5):
 
     best_score = distances[0][0]
     best_index = indices[0][0]
-
+    
+    print(f"[DEBUG] FAISS best_score: {best_score}, threshold: {threshold}")
     if best_score > threshold:
-
         student_id = student_ids[best_index]
-
         return student_id, best_score
 
     return None, None

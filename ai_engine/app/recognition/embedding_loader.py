@@ -1,64 +1,3 @@
-# # from app.services.backend_api import fetch_embeddings_from_backend
-# # from app.utils.logger import get_logger
-# # import numpy as np
-
-# # logger = get_logger(__name__)
-
-# # def load_embeddings():
-# #     """
-# #     Load embeddings from backend API
-# #     """
-
-# #     try:
-# #         student_ids, embeddings = fetch_embeddings_from_backend()
-
-# #         embeddings = np.array(embeddings).astype("float32")
-
-# #         logger.info(f"Loaded {len(student_ids)} embeddings from backend")
-
-# #         return student_ids, embeddings
-
-# #     except Exception as e:
-# #         logger.error(f"Error loading embeddings: {e}")
-# #         return [], []
-
-
-# from app.services.backend_api import fetch_embeddings_from_backend
-# from app.utils.logger import get_logger
-# import numpy as np
-# import time
-
-# logger = get_logger(__name__)
-
-# def load_embeddings():
-#     """
-#     Backend se connect hone tak try karta rahega — rukega nahi
-#     """
-
-#     attempt = 0
-
-#     while True:
-#         attempt += 1
-#         try:
-#             logger.info(f"Backend se embeddings maang raha hoon... (attempt {attempt})")
-
-#             student_ids, embeddings = fetch_embeddings_from_backend()
-
-#             if not student_ids or len(embeddings) == 0:
-#                 logger.warning("Backend connected lekin koi embedding nahi aayi, 5 sec baad retry...")
-#                 time.sleep(5)
-#                 continue
-
-#             embeddings = np.array(embeddings).astype("float32")
-#             logger.info(f"✅ {len(student_ids)} embeddings load ho gayi!")
-#             return student_ids, embeddings
-
-#         except Exception as e:
-#             logger.error(f"❌ Backend se connect nahi hua: {e}")
-#             logger.info("⏳ 5 sec baad dobara try karega...")
-#             time.sleep(5)
-
-
 from app.services.backend_api import fetch_embeddings_from_backend
 from app.utils.logger import get_logger
 import numpy as np
@@ -113,7 +52,6 @@ def start_background_sync():
     """
     def sync_loop():
         while True:
-            # ✅ 1 minute wait karo
             time.sleep(60)
             try:
                 logger.info("🔄 Background sync — embeddings reload ho rahi hain...")
@@ -126,7 +64,12 @@ def start_background_sync():
 
                 embeddings_np = np.array(embeddings).astype("float32")
 
-                # ✅ FAISS index bhi update karo
+                # ✅ Globals update karo
+                global _student_ids, _embeddings
+                _student_ids = student_ids
+                _embeddings = embeddings_np
+
+                # ✅ FAISS index bhi update karo naye data se
                 from app.services.faiss_service import build_faiss_index
                 build_faiss_index()
 

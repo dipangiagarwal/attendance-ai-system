@@ -49,8 +49,8 @@ def open_camera(source):
         cap = cv2.VideoCapture(source)
 
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-    cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000)
-    cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, 5000)
+    cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 1920)
+    cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, 1080)
     return cap
 
 

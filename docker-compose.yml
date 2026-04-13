@@ -134,8 +134,8 @@ services:
   ai_engine:
     build: ./ai_engine
     container_name: attendance_ai_engine
-    ports:
-      - "9000:9000"
+    # ports:
+    #   - "9000:9000"
     env_file:
       - ./ai_engine/.env
     volumes:

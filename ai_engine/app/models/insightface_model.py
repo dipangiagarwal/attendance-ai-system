@@ -9,6 +9,6 @@ def load_insightface_model():
     )
     face_model.prepare(
         ctx_id=-1,
-        det_size=(320, 320)  # ✅ 640 → 320 kiya, kam RAM use karega
+        det_size=(640,640)  # ✅ 640 → 320 kiya, kam RAM use karega
     )
     return face_model

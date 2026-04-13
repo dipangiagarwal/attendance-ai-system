@@ -23,6 +23,7 @@ def recognize_faces(frame):
     for box, embedding in zip(face_boxes, embeddings):
 
         student_id, distance = search_face(embedding)
+        print(f"[DEBUG] Raw score: {distance}, student_id: {student_id}") 
 
         if student_id is not None:
 

@@ -108,7 +108,7 @@ def get_face_app():
     if _face_app is None:
         print("[INFO] InsightFace load ho raha hai backend mein...")
         _face_app = FaceAnalysis(name="buffalo_l", root=MODEL_ROOT)
-        _face_app.prepare(ctx_id=-1, det_size=(320, 320))
+        _face_app.prepare(ctx_id=-1, det_size=(640, 640))
         print("[INFO] InsightFace ready!")
     return _face_app
 
