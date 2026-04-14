@@ -10,7 +10,7 @@ from app.notifications.notification_router import route_notification
 
 
 redis_client = redis.Redis(
-    host="localhost",
+    host="attendance_redis",
     port=6379,
     db=0,
     decode_responses=True

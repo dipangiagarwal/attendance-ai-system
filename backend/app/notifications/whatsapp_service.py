@@ -9,6 +9,10 @@ WAHA_API_KEY = os.getenv("WAHA_API_KEY")
 SESSION_NAME = os.getenv("WAHA_SESSION", "default")
 
 def send_whatsapp(phone, message):
+    phone = phone.lstrip("0")
+    
+    if not phone.startswith("91"):
+        phone = "91" + phone
 
     payload = {
         "session": SESSION_NAME,

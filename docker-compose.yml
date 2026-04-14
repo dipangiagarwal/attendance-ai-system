@@ -220,7 +220,13 @@ services:
     restart: always
     networks:
       - attendance_network
-
+    environment:
+      - WAHA_API_KEY=41c3c146b71f4f0793d0b25539696d8d
+      - WAHA_DASHBOARD_USERNAME=admin
+      - WAHA_DASHBOARD_PASSWORD=5d233c988c4f41a2b947b1c3114a6bee
+      - WHATSAPP_SWAGGER_USERNAME=admin
+      - WHATSAPP_SWAGGER_PASSWORD=5d233c988c4f41a2b947b1c3114a6bee
+      - WAHA_START_SESSION=default  
 
 # ==========================================
 # Networks

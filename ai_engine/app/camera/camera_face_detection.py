@@ -3,9 +3,10 @@ import time
 from datetime import datetime
 from app.recognition.face_recognizer import recognize_faces
 from app.services.faiss_service import is_index_initialized
-from app.services.backend_api import send_attendance_to_backend
+from app.services.backend_api import send_attendance_to_backend, send_whatsapp_message  
 from app.utils.config import ATTENDANCE_COOLDOWN                  
-from app.utils.logger import get_logger                           
+from app.utils.logger import get_logger     
+                      
 
 logger = get_logger(__name__)
 
@@ -40,11 +41,12 @@ def process_frame(frame):
                 send_attendance_to_backend(student_id, timestamp, confidence)
                 last_attendance_time[student_id] = current_time
                 logger.info(f"Attendance marked for student {student_id}")
-                # # ✅ WhatsApp message bhejo
-                # send_whatsapp_message(
-                #     student_phone,   # student ka phone number
-                #     f"✅ Attendance marked for Student {student_id} at {timestamp}"
-                # )
+
+                # ✅ WhatsApp message bhejo
+                send_whatsapp_message(
+                    student_phone,   # student ka phone number
+                    f"✅ Attendance marked for Student {student_id} at {timestamp}"
+                )
         else:
             color = (0, 0, 255)
             label = "Unknown"

@@ -61,9 +61,10 @@ def mark_student_absent(db: Session, student_id: int, batch_id: int):
 
 
 def process_batch_absentees(db: Session, batch_id: int):
-
+    
     absent_students = get_absent_students(db, batch_id)
+    if not absent_students:
+        return  # ✅ avoid unnecessary processing
 
     for student_id in absent_students:
-
         mark_student_absent(db, student_id, batch_id)
